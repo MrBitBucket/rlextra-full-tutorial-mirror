@@ -74,26 +74,26 @@ The file looks a lot like XML, with various bits of Python included within brace
 The whole document is wrapped in a tag, with some key sections within it:
 
 .. code::xml
-<docinit>  
+  <docinit>  
         Here we register the fonts and colors to be used throughout   
         the document. 
-</docinit>       
-<template>  
+  </docinit>       
+  <template>  
 	    Here we define templates for the document.   
 	    They can include frames to handle flowing text, as well as   
 	    static components of the page, such as images, text, and   
 	    graphics. Later on, as we pass in our content, we can choose   
 	   which templates to use for each page.  
-</template>     
-<stylesheet>  
+  </template>     
+  <stylesheet>  
 	    Here we define paragraph and table styles much like you   
 	    would in a word processor.  
-</stylesheet>   
-<story>  
+  </stylesheet>   
+  <story>  
 	    Now it gets interesting. You've put in all the hard effort of   
 	    defining styles, frames, and fonts, and now it's time to give   
 	    your document some content.  
-</story>
+  </story>
 
 
 Making your first change: adding some new data
@@ -101,7 +101,7 @@ Making your first change: adding some new data
 
 First, let's turn our attention to the story where we loop over the product objects (starts line 86 in flyer_template.prep):
 
-.. code::xml
+.. code::python
 	<story>  
       <para style="h1"> Product Availability </para>  
 	    <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
@@ -112,19 +112,15 @@ First, let's turn our attention to the story where we loop over the product obje
 
 We're looping over all our products and printing a paragraph for each product's name. Let's add product summary and product price as well; your story should now look like this:
 
-.. code::xml
+.. code::python
     <story>  
-      
-      
         <para style="h1"> Product Availability </para>  
         <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
-      
         {{for prod in products}}  
             <para style="prod_name">{{i(prod.name)}}</para>  
             <para style="prod_summary">{{i(prod.summary)}}</para>  
             <para style="prod_price">{{i(prod.price)}}</para>  
         {{endfor}}  
-      
     </story>  
 
 Now execute python product_catalog.py and look at the results. You should see output like shown below, with new facts about each product displayed: 
@@ -137,34 +133,27 @@ Adding a page template
 We have more content, but the appearance is still not ideal. Let's see how we can use a page template to arrange our content. Go back to templates and take note of each part:
 
 .. code::xml
-
     <pageTemplate  
-     id="products">  
-      
+     id="products">    
     <!-- <pageGraphics> Holds a number of elements which draw  
     -->  
     <!-- graphics in fixed places on the page -->  
-    <pageGraphics>  
-      
+    <pageGraphics>    
         <!-- <image> sets a background PDF as an image to draw  
     -->  
         <!-- on top of -->  
         <image file="{{RML_DIR}}/flyer_background.pdf" x="0" y="0" width="595"   
-    height="842"/>  
-      
+    height="842"/>   
         <!-- <fill> sets the fill color for text and graphics to   
     follow -->  
-        <fill color="red"/>  
-      
+        <fill color="red"/>   
         <!-- setFont sets the font and text size for text to follow  
     -->  
         <setFont name="HelveticaNeue-Light" size="12"/>  
-      
         <!-- drawCenteredString draws text centered about the -->    
         <!-- specified point -->    
         <drawCenteredString x="297" y="40">Order   
     online</drawCenteredString>  
-      
         <!-- The following three elements do exactly as above for a  
     -->  
         <!-- different string -->  
@@ -172,8 +161,7 @@ We have more content, but the appearance is still not ideal. Let's see how we ca
         <setFont name="HelveticaNeue-Bold" size="10"/>  
         <drawCenteredString x="297"   
     y="30">www.harwoodgame.co.uk</drawCenteredString>  
-    </pageGraphics>  
-      
+    </pageGraphics>   
     <!-- Frames hold flowing content; when the frame is full, the -->  
     <!-- content begins to flow into the next frame. Once all are full,  
     -->  
@@ -182,8 +170,7 @@ We have more content, but the appearance is still not ideal. Let's see how we ca
      -->  
     <!-- which template is to be used on the next page creation. -->  
     <frame id="left" x1="5%" y1="8%" width="40%" height="77%"/>  
-    <frame id="right" x1="55%" y1="8%" width="40%" height="77%"/>  
-      
+    <frame id="right" x1="55%" y1="8%" width="40%" height="77%"/>     
     </pageTemplate>  
                         
 
@@ -192,23 +179,17 @@ By default, the PDF rendering engine uses the first template until it is told ot
 Let's include a set next template at the start of the story to use this 'products' template:
 
 .. code::xml
-
     <story>  
-      
-      
         <setNextTemplate name="products" />  
         <nextFrame/>  
-      
         <para style="h1"> Product Availability </para>  
         <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
-      
         {{for prod in products{% templatetag   
     closevariable %}  
             <para style="prod_name">{{i(prod.name)}}</para>  
             <para style="prod_summary">{{i(prod.summary)}}</para>  
             <para style="prod_price">{{i(prod.price)}}</para>  
-        {{endfor}}  
-      
+        {{endfor}}    
     </story>  
 
 Adding some static PDF pages
@@ -216,24 +197,17 @@ Adding some static PDF pages
 Notice that a nice PDF background has been used on which the products list is printed. That can also be used to include full static pages. Let's use pre-made PDFs to replace the blank first page and insert a standard end page. Your story should look like this:
 
 .. code::xml
-
-    <story>  
-      
-      
+  <story>  
         <includePdfPages filename="{{RML_DIR}}/flyer_front.pdf"   
     leadingFrame="no"/>  
-      
         <setNextTemplate name="products" />  
         <nextFrame/>  
-      
         <para style="h1"> Product Availability </para>  
-        <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
-      
+        <para style="h2">{{today.strftime('%d %B %Y')}}</para>    
         {{for prod in products}}<para style="prod_name">{{i(prod.name)}}</para>  
             <para style="prod_summary">{{i(prod.summary)}}</para>  
             <para style="prod_price">{{i(prod.price)}}</para>  
-        {{endfor}}  
-      
+        {{endfor}}    
     </story>  
 
 And the generated PDF should now have pages like the following included:
@@ -254,31 +228,26 @@ Now let's make the designer proud. First, note that page 3 beings with the text 
 Ideally, we would be able to keep the descriptions from breaking across pages, so that all the information about a product stayed together. RML has many ways of controlling page flow and layouts, and in this case, we can use the keepWithNext attribute on these paragraph styles (prod_summary and prod_name). Your stylesheet should now look like this:
 
 .. code::xml
-
-    <stylesheet>  
-      
+    <stylesheet>    
         <paraStyle name="h1"  
         fontName="HelveticaNeue-Light"  
         fontSize="27"  
         leading="17"  
         spaceBefore = "30"  
         />  
-      
         <paraStyle name="h2"  
         fontName="HelveticaNeue-Bold"  
         fontSize="15"  
         leading="17"  
         spaceBefore = "15"  
         />  
-      
         <paraStyle name="prod_name"  
         fontName="HelveticaNeue-Light"  
         fontSize="14.5"  
         leading="14"  
         spaceBefore = "14"  
         keepWithNext = "1"  
-        />  
-      
+        />
         <paraStyle name="prod_summary"  
         fontName="HelveticaNeue-Light"  
         fontSize="12"  
@@ -286,8 +255,7 @@ Ideally, we would be able to keep the descriptions from breaking across pages, s
         spaceBefore = "12"  
         textColor="green"  
         keepWithNext = "1"  
-        />  
-      
+        /> 
         <paraStyle name="prod_price"  
         fontName="HelveticaNeue-Bold"  
         fontSize="7.5"  
@@ -295,7 +263,6 @@ Ideally, we would be able to keep the descriptions from breaking across pages, s
         spaceBefore = "4"  
         textColor="green"   
         />  
-      
     </stylesheet>  
 
 Notice that now page 3 has the entire block of content carried over together:
@@ -309,10 +276,8 @@ Getting fonts and colors correct
 Finally, let's get our colors and fonts correct. We can register a new font and a new color in the docinit section; edit yours to look like this:
 
 .. code::xml
-
     <docinit>  
-      
-        <registerTTFont faceName="Angelina" fileName="{{RML_DIR}}/fonts/angelina.TTF"/>   
+      <registerTTFont faceName="Angelina" fileName="{{RML_DIR}}/fonts/angelina.TTF"/>   
         <registerTTFont faceName="HelveticaNeue-Light" fileName="{{RML_DIR}}/fonts/LTe50263.ttf"/>  
         <registerTTFont faceName="HelveticaNeue-Bold" fileName="{{RML_DIR}}/fonts/LTe50261.ttf"/>   
         <color id="GREEN-ISH" CMYK="[0.2,0.25,0.60,0.25]"/>   
@@ -338,7 +303,6 @@ Looking at the data source
 Now let's turn our attention to how we passed the data into the template in the first place. Open product_catalog.py. For now, lets focus on lines 44-64, where we see the main loop over the XML to build product objects:
 
 .. code::python
-
     for prodTag in tagTree:   
         id = int(str(prodTag.ProductId1))   #extract tag content   
         if id in ids_seen:   
@@ -378,21 +342,15 @@ __ http://www.reportlab.com/static/cms/img/img.zip
 Let's tidy up this issue when there is no set price and the 'request a quote' text does not fit into the small box. Let's put a conditional statement in our template which uses a different size box when the quote gets big. Your story should now look like this: (in /rml/checklist_template.prep)
 
 .. code::xml
-
         <story>  
-      
-        <setNextTemplate name="products"/>  
-      
-        <para style="h1">Packing Checklist</para>  
-      
-        {{for prod in products}}  
-      
+        <setNextTemplate name="products"/>
+        <para style="h1">Packing Checklist</para>   
+        {{for prod in products}}   
         <para style="prod_name">{{i(prod.name)}}  </para>  
         <para style="prod_summary">{{i(prod.summary)}}</para>  
         <imageAndFlowables imageName="{{RML_DIR}}/{{if VEGETARIAN}}img/carrot.jpg{{else}}{{prod.imgURL}}{{endif}}"   
     imageTopPadding="12"   
-    imageBottomPadding="12"></imageAndFlowables>    
-      
+    imageBottomPadding="12"></imageAndFlowables>       
         {{if len(str(prod.price)) < 15}}  
             <illustration width="55" height="20">  
             <fill color="lightgrey"/>  
@@ -410,13 +368,10 @@ Let's tidy up this issue when there is no set price and the 'request a quote' te
             <setFont name="HelveticaNeue-Bold" size="7.5"/>  
             <drawCenteredString x="80" y="5">{{(prod.price)}}</drawCenteredString>  
         {{endif}}  
-      
         <rect x="0" y="3" width="12" height="12" fill="No" stroke="Yes"   
     round="1"/>  
         </illustration>  
-      
         {{endfor}}  
-      
     </story>  
       
 	  
