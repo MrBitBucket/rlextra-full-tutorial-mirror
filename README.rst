@@ -74,7 +74,7 @@ The file looks a lot like XML, with various bits of Python included within brace
 The whole document is wrapped in a tag, with some key sections within it:
 
 .. code::xml
-  <docinit>  
+<docinit>  
         Here we register the fonts and colors to be used throughout   
         the document. 
   </docinit>       
