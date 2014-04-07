@@ -101,7 +101,7 @@ Making your first change: adding some new data
 
 First, let's turn our attention to the story where we loop over the product objects (starts line 86 in flyer_template.prep):
 
-.. code::python
+.. code::
 <story>  
       <para style="h1"> Product Availability </para>  
 	    <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
