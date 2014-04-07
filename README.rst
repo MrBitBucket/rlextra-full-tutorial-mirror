@@ -102,7 +102,7 @@ Making your first change: adding some new data
 First, let's turn our attention to the story where we loop over the product objects (starts line 86 in flyer_template.prep):
 
 .. code::python
-	<story>  
+<story>  
       <para style="h1"> Product Availability </para>  
 	    <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
       {{for prod in products}}  
@@ -113,7 +113,7 @@ First, let's turn our attention to the story where we loop over the product obje
 We're looping over all our products and printing a paragraph for each product's name. Let's add product summary and product price as well; your story should now look like this:
 
 .. code::python
-    <story>  
+<story>  
         <para style="h1"> Product Availability </para>  
         <para style="h2">{{today.strftime('%d %B %Y')}}</para>  
         {{for prod in products}}  
@@ -133,7 +133,7 @@ Adding a page template
 We have more content, but the appearance is still not ideal. Let's see how we can use a page template to arrange our content. Go back to templates and take note of each part:
 
 .. code::xml
-    <pageTemplate  
+<pageTemplate  
      id="products">    
     <!-- <pageGraphics> Holds a number of elements which draw  
     -->  
@@ -179,7 +179,7 @@ By default, the PDF rendering engine uses the first template until it is told ot
 Let's include a set next template at the start of the story to use this 'products' template:
 
 .. code::xml
-    <story>  
+<story>  
         <setNextTemplate name="products" />  
         <nextFrame/>  
         <para style="h1"> Product Availability </para>  
@@ -197,7 +197,7 @@ Adding some static PDF pages
 Notice that a nice PDF background has been used on which the products list is printed. That can also be used to include full static pages. Let's use pre-made PDFs to replace the blank first page and insert a standard end page. Your story should look like this:
 
 .. code::xml
-  <story>  
+<story>  
         <includePdfPages filename="{{RML_DIR}}/flyer_front.pdf"   
     leadingFrame="no"/>  
         <setNextTemplate name="products" />  
@@ -228,7 +228,7 @@ Now let's make the designer proud. First, note that page 3 beings with the text 
 Ideally, we would be able to keep the descriptions from breaking across pages, so that all the information about a product stayed together. RML has many ways of controlling page flow and layouts, and in this case, we can use the keepWithNext attribute on these paragraph styles (prod_summary and prod_name). Your stylesheet should now look like this:
 
 .. code::xml
-    <stylesheet>    
+<stylesheet>    
         <paraStyle name="h1"  
         fontName="HelveticaNeue-Light"  
         fontSize="27"  
@@ -276,7 +276,7 @@ Getting fonts and colors correct
 Finally, let's get our colors and fonts correct. We can register a new font and a new color in the docinit section; edit yours to look like this:
 
 .. code::xml
-    <docinit>  
+<docinit>  
       <registerTTFont faceName="Angelina" fileName="{{RML_DIR}}/fonts/angelina.TTF"/>   
         <registerTTFont faceName="HelveticaNeue-Light" fileName="{{RML_DIR}}/fonts/LTe50263.ttf"/>  
         <registerTTFont faceName="HelveticaNeue-Bold" fileName="{{RML_DIR}}/fonts/LTe50261.ttf"/>   
@@ -303,35 +303,34 @@ Looking at the data source
 Now let's turn our attention to how we passed the data into the template in the first place. Open product_catalog.py. For now, lets focus on lines 44-64, where we see the main loop over the XML to build product objects:
 
 .. code::python
-    for prodTag in tagTree:   
-        id = int(str(prodTag.ProductId1))   #extract tag content   
-        if id in ids_seen:   
-            continue   
-        else:   
-            ids_seen.add(id)              
-        prod = Product()   
-        prod.id = id   
-        prod.modelNumber = int(str(prodTag.ModelNumber))   
-        prod.archived = (str(prodTag.Archived) == 'true')   
-        prod.name = fix(prodTag.ModelName)   
-        prod.summary= fix(prodTag.Summary)   
-        prod.description= fix(prodTag.Description)   
-        if prod.modelNumber in request_a_quote:   
-            prod.price = "Call us on 01635 246830 for a quote"   
-        else:   
-            prod.price =  '£' + str(prodTag.UnitCost)[0:len(str(prodTag.UnitCost))-2]   
-        if prod.archived:   
-            pass   
-        else:   
-            products.append(prod)  
+for prodTag in tagTree:   
+    id = int(str(prodTag.ProductId1))   #extract tag content   
+    if id in ids_seen:   
+        continue   
+    else:   
+        ids_seen.add(id)              
+    prod = Product()   
+    prod.id = id   
+    prod.modelNumber = int(str(prodTag.ModelNumber))   
+    prod.archived = (str(prodTag.Archived) == 'true')   
+    prod.name = fix(prodTag.ModelName)   
+    prod.summary= fix(prodTag.Summary)   
+    prod.description= fix(prodTag.Description)   
+    if prod.modelNumber in request_a_quote:   
+        prod.price = "Call us on 01635 246830 for a quote"   
+    else:   
+        prod.price =  '£' + str(prodTag.UnitCost)[0:len(str(prodTag.UnitCost))-2]   
+    if prod.archived:   
+        pass   
+    else:   
+        products.append(prod)  
 
 Remember how the checklist has been failing to generate? This is because the PDF engine has been complaining that the Prep file is trying to access an attribute imgURL of the products which does not exist. If we check the XML, we'll see that there is a tag <ImageUrl>. Let's try giving our product objects an attribute based on this:
 
 .. code::python
-
-    prod.description= fix(prodTag.Description)   
-    prod.imgURL = 'img/' + fix(prodTag.ImageUrl).replace(' ','').split('/')[-1]   
-    if prod.modelNumber in request_a_quote:   
+prod.description= fix(prodTag.Description)   
+prod.imgURL = 'img/' + fix(prodTag.ImageUrl).replace(' ','').split('/')[-1]   
+if prod.modelNumber in request_a_quote:   
 
 Now try building the document again:
 
@@ -342,7 +341,7 @@ __ http://www.reportlab.com/static/cms/img/img.zip
 Let's tidy up this issue when there is no set price and the 'request a quote' text does not fit into the small box. Let's put a conditional statement in our template which uses a different size box when the quote gets big. Your story should now look like this: (in /rml/checklist_template.prep)
 
 .. code::xml
-        <story>  
+<story>  
         <setNextTemplate name="products"/>
         <para style="h1">Packing Checklist</para>   
         {{for prod in products}}   
