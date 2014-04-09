@@ -19,10 +19,8 @@ This tutorial is aimed at showing the use of Report Markup Language (RML), which
 .. _register on our site: http://www.reportlab.com/accounts/register/
 
 
-Download and install tutorial pack
-----------------------------------
-
-First thing's first: download our tutorial pack. This includes a number of images which you will need later.
+Structure of the Tutorial
+-------------------------
 
 Take a look at the directory structure:
 
@@ -71,9 +69,9 @@ Inside a Preppy template
 
 The file looks a lot like XML, with various bits of Python included within braces {{}}. This allows you to import functions and call on data objects which have been passed in.
 
-The whole document is wrapped in a tag, with some key sections within it:
+The whole document is wrapped in a tag, with some key sections within it::
 
-.. code::xml
+
 <docinit>  
         Here we register the fonts and colors to be used throughout   
         the document. 
